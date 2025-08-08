@@ -101,11 +101,130 @@ This Power Automate flow automates the approval process for newly created items 
 ## Flow chart
 
 ![alt text](./Youtube%20-%20Pragmatic%20Works/Activities/1_New_Device_Reuqest_with_Approval/PowerAutomate_RequestNewDevice.png)
-
+---
 ## Purpose
 This automation reduces manual approval work by:
 - Automatically detecting high-value items (> 200).
 - Routing them to the right manager for review.
 - Updating the SharePoint list status based on the decision.
 - Sending timely notifications to both managers and requesters.
+
+# Activity 2: Power Automate Cloud - Weekly Device Request List Email
+
+## Description
+This Power Automate flow sends a weekly email containing a list of all device requests retrieved from a SharePoint list. It is scheduled to run automatically based on a set recurrence and formats the data into an HTML table for easy viewing in the email.
+
+---
+
+## Workflow Steps
+1. **Trigger – Recurrence:**
+   - The flow runs on a scheduled recurrence (weekly).
+
+2. **Get Items from SharePoint:**
+   - Retrieves all items from the SharePoint list containing device requests.
+
+3. **Create HTML Table:**
+   - Converts the retrieved SharePoint list data into an HTML table format.
+
+   ```html
+    <style>
+    table {
+      border: 1px solid #1C6EA4;
+      background-color: #EEEEEE;
+      width: 75%;
+      text-align: center;
+      border-collapse: collapse;
+    }
+    table td, table th {
+      border: 1px solid #AAAAAA;
+      padding: 3px 2px;
+    }
+    table tbody td {
+      font-size: 13px;
+    }
+    table thead {
+      background: #1C6EA4;
+      border-bottom: 2px solid #444444;
+    }
+    table thead th {
+      font-size: 15px;
+      font-weight: bold;
+      color: #FFFFFF;
+      border-left: 2px solid #D0E4F5;
+    }
+    table thead th:first-child {
+      border-left: none;
+    }
+    </style>
+   ```
+
+4. **Compose:**
+   - Prepares the HTML table data for embedding into the email body.
+
+5. **Send an Email (V2):**
+   - Sends an email to the target recipients with the HTML table included, displaying all device requests for the week.
+
+---
+## Flow chart
+![2_Sending_email_List_of_Request_Device_20250808073412](./Youtube%20-%20Pragmatic%20Works/Activities/2_Sending_email_List_of_Request_Device/Screenshot%202025-08-08%20153226.png)
+
+---
+## Purpose
+This automation streamlines reporting by:
+- Automatically pulling the latest device request data every week.
+- Formatting the data into a clear HTML table.
+- Sending it directly to stakeholders via email without manual intervention.
+ ---
+
+# Activity 3: Power Automate Cloud - Auto-Save Device Request Excel from Email to SharePoint
+
+## Description
+This Power Automate flow automatically saves a specific Excel file from incoming emails into a SharePoint document library. It triggers when an email with a specific subject arrives, checks for an Excel attachment, saves it to SharePoint with a timestamped file name, and sends a confirmation email upon success.
+
+
+## Workflow Steps
+
+### 1. Trigger — When a new email arrives (V3)
+- **Folder:** Inbox
+- **Include Attachments:** Yes
+- **Only with Attachments:** Yes
+- **Subject Filter:** `Device Request`
+
+### 2. Condition — Subject Contains Keyword
+- Checks if the email subject contains `Device Request`.
+
+### 3. Process Attachments
+- **Apply to each:** Loops through all attachments.
+- Condition: Proceeds only if the file name ends with `.xlsx`.
+
+### 4. Add Timestamp to File Name
+- **Compose step** with the following expression:
+  ```html
+  concat(formatDateTime(utcNow(),'yyyy-MM-dd_HHmmss'), '_', items('Apply_to_each')?['Name'])
+  ````
+- This ensures each saved file name is unique, e.g., `2025-08-09_142300_Device_Request.xlsx`.
+
+### 5. Create File in SharePoint
+- **Site Address:** Your SharePoint site URL
+- **Folder Path:** Destination document library folder
+- **File Name:** Output of the Compose step above
+- **File Content:** `ContentBytes` from the attachment
+
+### 6. Send Confirmation Email
+- Sends an email notification to confirm the file was saved successfully.
+- **To:** Your email
+- **Subject:** `Device Request Excel saved to SharePoint`
+- **Body:**
+  ```html
+  The following file was saved to SharePoint:<br>
+  <strong>@{outputs('Compose')}</strong>
+  ```
+---
+# Flow chart
+![Save_Specific_Email_Attachment_to_Sharepoint](./Youtube%20-%20Pragmatic%20Works/Activities/3_Save_Specific_Email_Attachment_to_SharePoint/Save_Specific_Email_Attachment_to_Sharepoint.png)
+
+## Purpose
+- Detects incoming emails containing device request Excel files.
+- Saves them to SharePoint with a timestamp to avoid overwriting.
+- Sends a confirmation email to ensure you are notified of the action.
 
