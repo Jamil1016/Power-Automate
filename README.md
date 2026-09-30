@@ -65,7 +65,7 @@ Make sure you have the required permissions to install software and access the n
 
 For more tips, visit the [Official Power Automate documentation](https://learn.microsoft.com/power-automate/)
 
-[View Cheatsheet (PDF)](./Pragmatic%20Works%20Power%20Automate%20Cheat%20%20Sheet.pdf)
+[View Cheatsheet (PDF)](./Youtube%20-%20Pragmatic%20Works/Pragmatic%20Works%20Power%20Automate%20Cheat%20%20Sheet.pdf)
 
 
 # Activity 1: Power Automate Cloud - Send Email for Device Request with Approval
